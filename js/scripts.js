@@ -1,3 +1,4 @@
+//Bug: it should not be able to roll "0"
 //Business Logic for Game
 
 let game = new Game();
@@ -73,7 +74,7 @@ function calculateScore() {
     highlightPlayer();
     currentTotal.innerText = 0;
     game.roll = 0;
-
+    determineWinner();
 }
 
 function highlightPlayer() {
@@ -102,6 +103,7 @@ function switchPlayer() {
     } else {
         game.counter = 1;
     }
+    highlightPlayer();
 }
 //UI Logic
 
@@ -113,18 +115,47 @@ function handleDiceRoll(e) {
     document.querySelector("#currentRoll").innerText = newRoll;
     if (newRoll === 1) {
         switchPlayer();
-        document.querySelector("#currentRoll").innerText = 0;
     } else {
         game.updateRollScore(newRoll);
         document.querySelector("#turnTotalSum").innerText = game.roll;  
     }
 }
 
+function displayWinner(name) {
+    let winnerDiv = document.getElementById("winner");
+    let winnerSpan = document.getElementById("winnerName");
+    let refresh = document.getElementById("refresh");
+    winnerSpan.innerText = name;
+    winnerDiv.classList.remove("hidden");
+    refresh.classList.remove("hidden");
+}
+
+
+function determineWinner() {
+    let player1Score = parseInt(document.getElementById("player1Score").innerText);
+    let player2Score = parseInt(document.getElementById("player2Score").innerText);
+    if (player1Score >= 100) {
+        displayWinner(game.players["1"].name);
+    }
+    else if (player2Score >= 100) {
+        displayWinner(game.players["2"].name);
+    }
+    else {
+
+    }
+}
+
+function playAgain() {
+    location.reload();
+}
+
 window.addEventListener("load", function() {
     document.querySelector("#roll").addEventListener("click", handleDiceRoll);
-    document.querySelector("#playerNames").addEventListener("click", startGame);
+    document.querySelector("form").addEventListener("submit", startGame);
     document.getElementById("hold").addEventListener("click", calculateScore);
+    document.querySelector("#refresh").addEventListener("click", playAgain);
 });
+
 
 
 
